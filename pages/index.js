@@ -6,34 +6,31 @@ export async function getStaticProps() {
     space: process.env.CONTENTFUL_SPACE_ID,
     accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
   });
-  const res = await client.getEntries({
-    content_type: 'recipe',
-  });
+
+  const res = await client.getEntries({ content_type: 'recipe' });
 
   return {
     props: {
       recipes: res.items,
     },
-    revalidate: 1
+    revalidate: 1,
   };
 }
 
 export default function Recipes({ recipes }) {
   return (
     <div className="recipe-list">
-      {[...recipes].map(({ fields, sys }) => (
-        <RecipeCard key={sys.id} fields={fields} />
+      {recipes.map((recipe) => (
+        <RecipeCard key={recipe.sys.id} recipe={recipe} />
       ))}
 
-      <style jsx>
-        {`
-          .recipe-list {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 20px 60px;
-          }
-        `}
-      </style>
+      <style jsx>{`
+        .recipe-list {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-gap: 20px 60px;
+        }
+      `}</style>
     </div>
   );
 }
